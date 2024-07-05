@@ -1,5 +1,7 @@
 #include "imports/stdlib.fc";
 
+;; =============== messages =============================
+
 () recv_internal(int my_balance, int msg_value, cell in_msg_full, slice in_msg_body) impure {
     if (in_msg_body.slice_empty?()) {
         return ();
@@ -13,6 +15,8 @@
     }
 }
 
+;; =============== storage =============================
+
 ;; Read function for counter
 (int) load_data() inline {
     var ds = get_data().begin_parse();
@@ -24,4 +28,10 @@
     set_data(begin_cell())
         .store_unit(counter, 64)
         .end_cell();
+}
+
+;; =============== getters =============================
+init counter() method_id {
+    var (counter) = load_data();
+    return counter;
 }
