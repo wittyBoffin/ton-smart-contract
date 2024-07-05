@@ -1,29 +1,23 @@
-import { Address, beginCell, Cell, Contract, contractAddress, ContractProvider, Sender, SendMode } from '@ton/core';
+import { Contract, ContractProvider, Sender, Address, Cell, contractAddress, beginCell } from "@ton/core";
 
-export type CounterConfig = {};
+export default class Counter implements Contract {
+    static createForDeploy(code: Cell, initialCounterValue: number) {
+        const data = beginCell()
+                        .storeUint(initialCounterValue, 64)
+                        .endCell();
 
-export function counterConfigToCell(config: CounterConfig): Cell {
-    return beginCell().endCell();
-}
+        const workChain = 0;
+        const address = contractAddress(workChain, { code, data });
 
-export class Counter implements Contract {
-    constructor(readonly address: Address, readonly init?: { code: Cell; data: Cell }) {}
-
-    static createFromAddress(address: Address) {
-        return new Counter(address);
+        return new Counter(address, { code, data });
     }
 
-    static createFromConfig(config: CounterConfig, code: Cell, workchain = 0) {
-        const data = counterConfigToCell(config);
-        const init = { code, data };
-        return new Counter(contractAddress(workchain, init), init);
-    }
+    constructor(readonly address: Address, readonly init?: { code: Cell, data: Cell }) {}
 
-    async sendDeploy(provider: ContractProvider, via: Sender, value: bigint) {
+    async sendDeploy(provider: ContractProvider, via: Sender) {
         await provider.internal(via, {
-            value,
-            sendMode: SendMode.PAY_GAS_SEPARATELY,
-            body: beginCell().endCell(),
+            value: "0.01",
+            bounce: false
         });
     }
 }
