@@ -1,4 +1,4 @@
-import { Address, Cell, StateInit, beginCell, contractAddress, storeStateInit, toNano } from "ton-core";
+import { Address, Cell, StateInit, beginCell, contractAddress, storeStateInit, toNano } from "@ton/core";
 import { hex } from "../build/master.compiled.json";
 import { walletHex } from "../build/wallet.compiled.json";
 import qs from "qs";
